@@ -1,0 +1,23 @@
+/* Login.css */
+
+.login-container {
+    background: #f8f9fa;
+  }
+  
+  .login-form {
+    max-width: 400px;
+    width: 100%;
+  }
+  
+  .login-form h2 {
+    font-weight: 600;
+  }
+  
+  .login-form input {
+    border-radius: 0.25rem;
+  }
+  
+  .login-form button {
+    border-radius: 0.25rem;
+  }
+  

@@ -12,6 +12,8 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "users")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE) // Ajout de l'héritage
+@DiscriminatorColumn(name = "dtype", discriminatorType = DiscriminatorType.STRING) // Ajout du champ discriminant
 public class Users implements UserDetails {
 
     @Id
@@ -22,6 +24,7 @@ public class Users implements UserDetails {
     private String password;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "role") // Colonne pour la base de données
     private Role role;  // Utilisation de l'énumération Role
 
     @Override

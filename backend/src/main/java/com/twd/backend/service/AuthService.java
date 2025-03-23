@@ -65,11 +65,15 @@ public class AuthService {
             var user = ourUserRepo.findByEmail(signinRequest.getEmail()).orElseThrow();
             var jwt = jwtUtils.generateToken(user);
             var refreshToken = jwtUtils.generateRefreshToken(new HashMap<>(), user);
+
+            // Ajoutez le rôle de l'utilisateur à la réponse
             response.setStatusCode(200);
             response.setToken(jwt);
             response.setRefreshToken(refreshToken);
             response.setExpirationTime("24Hr");
             response.setMessage("Successfully Signed In");
+            response.setRole(Role.valueOf(user.getRole().toString())); // Ajoutez cette ligne pour renvoyer le rôle
+
         } catch (Exception e) {
             response.setStatusCode(500);
             response.setError(e.getMessage());
