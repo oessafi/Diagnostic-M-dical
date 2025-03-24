@@ -1,8 +1,17 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+<<<<<<< HEAD
 import { useNavigate } from 'react-router-dom';  // 'Link' est retiré ici
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './login.css'; // Import du fichier CSS
+=======
+import {Link, useNavigate} from 'react-router-dom';
+import { Helmet } from 'react-helmet';// 'Link' est retiré ici
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './login.css'; // Import du fichier CSS
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+>>>>>>> 77b9aa1 (Initial commit)
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -52,9 +61,23 @@ const Login = () => {
   };
 
   return (
+<<<<<<< HEAD
     <div className="login-container d-flex justify-content-center align-items-center vh-100">
       <div className="login-form bg-light p-4 rounded shadow">
         <h2 className="mb-4 text-center">Login</h2>
+=======
+      <>
+        <Helmet>
+          <title>Login - MediAi Care</title>
+        </Helmet>
+        <Navbar/>
+    <div className="login-container d-flex justify-content-center align-items-center vh-100">
+      <div className="login-form bg-light p-4 rounded shadow">
+        <h4 className="mb-4 text-center">Welcome To</h4>
+        <div className="logo-container">
+        <img src="/assets/img/logo.png" alt="Logo" className="login-logo" />
+        </div>
+>>>>>>> 77b9aa1 (Initial commit)
         <div className="mb-3">
           <input
             type="email"
@@ -77,14 +100,28 @@ const Login = () => {
         </div>
         {error && <div className="alert alert-danger">{error}</div>}
         <button 
+<<<<<<< HEAD
           className="btn btn-primary w-100" 
+=======
+          className="btn btn-primary w-100 mb-3"
+>>>>>>> 77b9aa1 (Initial commit)
           onClick={handleLogin}
           disabled={loading}
         >
           {loading ? 'Loading...' : 'Login'}
         </button>
+<<<<<<< HEAD
       </div>
     </div>
+=======
+        <p className="text-center">
+          Don't have an account? <Link to="/signup"className="text-decoration-none">Sign Up</Link>
+        </p>
+      </div>
+    </div>
+        <Footer/>
+        </>
+>>>>>>> 77b9aa1 (Initial commit)
   );
 };
 

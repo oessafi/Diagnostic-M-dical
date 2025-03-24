@@ -16,8 +16,41 @@
   .login-form input {
     border-radius: 0.25rem;
   }
+<<<<<<< HEAD
   
   .login-form button {
     border-radius: 0.25rem;
   }
   
+=======
+.logo-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.login-logo {
+  width: 300px; /* Adjust size */
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+/* Center the signup box */
+.signup-container {
+  height: 100vh;
+}
+
+.signup-form {
+  width: 400px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.signup-logo {
+  width: 300px; /* Adjust size */
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+>>>>>>> 77b9aa1 (Initial commit)

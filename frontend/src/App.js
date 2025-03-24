@@ -9,6 +9,10 @@ import ViewAppointments from './pages/ViewAppointments';
 import ManageUsers from './pages/ManageUsers';
 import MedicalRecords from './pages/MedicalRecords';
 import 'bootstrap/dist/css/bootstrap.min.css';
+<<<<<<< HEAD
+=======
+import Main from "./components/Main";
+>>>>>>> 77b9aa1 (Initial commit)
 
 const PrivateRoute = ({ children }) => {
     const token = localStorage.getItem('token');
@@ -19,6 +23,10 @@ function App() {
     return (
         <Router>
             <Routes>
+<<<<<<< HEAD
+=======
+                <Route index element={<Main />} />
+>>>>>>> 77b9aa1 (Initial commit)
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
 
