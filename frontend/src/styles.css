@@ -1,0 +1,104 @@
+.navbar-logo {
+    width: 120px; /* Adjust size */
+    height: auto;
+}
+
+.navbar {
+    padding: 10px 20px;
+}
+
+.navbar-nav .nav-link {
+    font-size: 16px;
+    color: #333;
+    transition: 0.3s;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #007bff;
+}
+
+.btn-primary {
+    border-radius: 20px;
+    padding: 8px 20px;
+}
+.btn-danger{
+    border-radius: 20px;
+    padding: 8px 20px;
+}
+.navbar-logo{
+    width:200px;
+}
+/* Banner Section */
+.banner-container {
+    position: relative;
+    width: 100%;
+    height: 75vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-bottom:30px;
+}
+
+.banner-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1; /* Ensures image stays behind text */
+}
+
+.banner-text {
+    position: relative;
+    z-index: 1;
+    color: white;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);
+    max-width: 700px;
+}
+
+.banner-text h1 {
+    font-size: 2.8rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.banner-text p {
+    font-size: 1.2rem;
+    margin-top: 50px;
+    text-align: left; /* Left-aligns the paragraph text */
+}
+
+.btn-light {
+    background-color: #fff;
+    color: #333;
+    font-size: 1.2rem;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+}
+
+.btn-light:hover {
+    background-color: #f8f9fa;
+}
+.btn-success1{
+    background-color: #05bc08;
+    color:#ffffff;
+}
+.btn-blue1{
+    background-color: #0b60b5;
+    color:#ffffff;
+}
+.btn-success1:hover{
+    background-color: #05bc08;
+    color:#ffffff;
+}
+.btn-blue1:hover{
+    background-color: #0b60b5;
+    color:#ffffff;
+}
+.icon{
+    font-size:50px;
+    color:#0b60b5;
+}

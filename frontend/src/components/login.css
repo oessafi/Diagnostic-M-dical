@@ -1,0 +1,56 @@
+/* Login.css */
+
+.login-container {
+  background: #f8f9fa;
+}
+
+.login-form {
+  max-width: 400px;
+  width: 100%;
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.login-form h2,
+.login-form h4 {
+  font-weight: 600;
+}
+
+.login-form input {
+  border-radius: 0.25rem;
+  margin-bottom: 10px;
+}
+
+.login-form button {
+  border-radius: 0.25rem;
+}
+
+/* Logo styling */
+.logo-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.login-logo,
+.signup-logo {
+  width: 300px;
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Center the signup box */
+.signup-container {
+  height: 100vh;
+}
+
+.signup-form {
+  width: 400px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
