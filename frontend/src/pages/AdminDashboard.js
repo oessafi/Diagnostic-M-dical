@@ -4,7 +4,7 @@ import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Helmet} from "react-helmet";
 import AdminNavbar from "../components/AdminNavBar";
-import AdminSidebar from "../components/AdminSideBar";
+import Sidebar from "../components/Sidebar";
 import "../styles.css";
 
 const AdminDashboard = () => {
@@ -16,20 +16,33 @@ const AdminDashboard = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [patientCount, setPatientCount] = useState(0);
 
+    const token = localStorage.getItem("token");
+
     // Fetch all users on mount
     useEffect(() => {
         const fetchAllUsers = async () => {
-            setLoading(true);
-            try {
-                const response = await axios.get("http://localhost:6060/api/users");
+            const token = localStorage.getItem("token");
+            if (!token) {
+                console.warn("No token found — skipping fetch.");
+                return;
+            }
 
-                // Filter only ADMIN and MEDECIN
+            setLoading(true);
+
+            try {
+                const response = await axios.get("http://localhost:6060/users", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                // Filter only ADMIN, MEDECIN, PATIENT
                 const filteredUsers = response.data.filter(user =>
                     user.role === "ADMIN" || user.role === "MEDECIN" || user.role === "PATIENT"
                 );
 
                 setAllUsers(filteredUsers);
-                setUsers(filteredUsers); // Show all matching users by default
+                setUsers(filteredUsers);
 
                 const patientCount = filteredUsers.filter(user => user.role === "PATIENT").length;
                 setPatientCount(patientCount);
@@ -42,6 +55,7 @@ const AdminDashboard = () => {
 
         fetchAllUsers();
     }, []);
+
 
     // Filter users by role when selectedRole changes
     useEffect(() => {
@@ -56,7 +70,7 @@ const AdminDashboard = () => {
         if (searchTerm.trim() !== "") {
             const lowerSearch = searchTerm.toLowerCase();
             filtered = filtered.filter(user =>
-                user.name.toLowerCase().includes(lowerSearch)
+                user.firstName.toLowerCase().includes(lowerSearch)
             );
         }
 
@@ -65,23 +79,35 @@ const AdminDashboard = () => {
     }, [searchTerm, selectedRole, allUsers]);
 
     const handleDelete = async (userId) => {
+        const token = localStorage.getItem("token"); // Or use sessionStorage
+
+        if (!token) {
+            alert("Vous devez être connecté pour effectuer cette action.");
+            return;
+        }
+
         if (window.confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ?")) {
             try {
-                const response = await axios.delete(`http://localhost:6060/api/users/${userId}`);
+                const response = await axios.delete(`http://localhost:6060/users/${userId}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+
                 if (response.status === 204) {
-                    // If deletion is successful, remove the user from the state
                     setUsers(prevUsers => prevUsers.filter(user => user.id !== userId));
                     alert('Utilisateur supprimé avec succès');
                 } else {
-                    console.error('Failed to delete user:', response);
-                    alert('Échec de la suppression de l\'utilisateur');
+                    console.error('Échec de la suppression:', response);
+                    alert("Échec de la suppression de l'utilisateur.");
                 }
             } catch (error) {
-                console.error('There was an error deleting the user!', error);
-                alert('Une erreur est survenue lors de la suppression');
+                console.error("Erreur lors de la suppression :", error);
+                alert("Une erreur est survenue lors de la suppression.");
             }
         }
     };
+
 
     return (
       <>
@@ -91,7 +117,7 @@ const AdminDashboard = () => {
         <AdminNavbar />
         <div className="container-fluid" style={{marginTop:"65px"}}>
             <div className="row">
-            <AdminSidebar />
+            <Sidebar />
                 <div className="col-sm p-3 min-vh-100" style={{margin: "10px"}}>
                     <h4>Dashboard</h4>
                     <div className="d-flex flex-wrap justify-content-between mt-3">
@@ -184,7 +210,7 @@ const AdminDashboard = () => {
                                 {users.map((user, index) => (
                                     <tr key={user.id}>
                                         <th scope="row">{index + 1}</th>
-                                        <td>{user.name}</td>
+                                        <td>{user.firstName} {user.lastName}</td>
                                         <td>{user.email}</td>
                                         <td>{user.role.charAt(0) + user.role.slice(1).toLowerCase()}</td>
                                         <td>

@@ -4,6 +4,7 @@ import com.twd.backend.service.OurUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -30,6 +31,8 @@ public class SecurityConfig {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(request -> request.requestMatchers("/auth/**", "/public/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/users/**").hasAnyAuthority("ADMIN", "MEDECIN", "PATIENT")
+                        .requestMatchers(HttpMethod.GET, "/reports/**").authenticated()
                         .requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
                         .requestMatchers("/medecin/**").hasAnyAuthority("MEDECIN")  // Utilisation du rôle MEDECIN
                         .requestMatchers("/patient/**").hasAnyAuthority("PATIENT")  // Utilisation du rôle PATIENT

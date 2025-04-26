@@ -5,7 +5,8 @@ import Signup from './components/Signup';
 import AdminDashboard from './pages/AdminDashboard';
 import MedecinDashboard from './pages/MedecinDashboard';
 import PatientDashboard from './pages/PatientDashboard';
-import ViewAppointments from './pages/ViewAppointments';
+import Arrangements from './pages/Arrangements';
+import PatientArrangements from './pages/PatientArrangements';
 import ViewReports from './pages/ViewReport';
 import ManageUsers from './pages/ManageUsers';
 import AddUser from './pages/AddUser';
@@ -13,6 +14,7 @@ import Reports from './pages/Reports';
 import UserDetail from './pages/UserDetail';
 import MedicalRecords from './pages/MedicalRecords';
 import Main from "./components/Main";
+import ChatBot from "./pages/ChatBot";
 import CasUrgent from "./components/CasUrgent";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import AddReport from "./pages/AddReport";
@@ -87,7 +89,23 @@ function App() {
                     path="/view-appointments"
                     element={
                         <PrivateRoute>
-                            <ViewAppointments />
+                            <Arrangements />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/appointments"
+                    element={
+                        <PrivateRoute>
+                            <PatientArrangements />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/chatbot"
+                    element={
+                        <PrivateRoute>
+                            <ChatBot />
                         </PrivateRoute>
                     }
                 />

@@ -4,12 +4,13 @@ import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Helmet} from "react-helmet";
 import AdminNavbar from "../components/AdminNavBar";
-import AdminSidebar from "../components/AdminSideBar";
+import Sidebar from "../components/Sidebar";
 import "../styles.css";
 
 const AddUser = () => {
     const [formData, setFormData] = useState({
-        name: "",
+        firstName: "",
+        lastName:"",
         email: "",
         password: "",
         role: ""
@@ -25,11 +26,11 @@ const AddUser = () => {
         e.preventDefault();
 
         try {
-            await axios.post("http://localhost:6060/api/users", formData);
+            await axios.post("http://localhost:6060/auth/signup", formData);
             alert("Utilisateur créé avec succès !");
             navigate("/manage-users");
             // Optionally reset form
-            setFormData({ name: "", email: "", password: "", role: "" });
+            setFormData({ firstName: "",lastName:"", email: "", password: "", role: "" });
         } catch (err) {
             console.error(err);
             alert("Erreur lors de la création de l'utilisateur.");
@@ -43,7 +44,7 @@ const AddUser = () => {
             <AdminNavbar />
             <div className="container-fluid" style={{marginTop:"65px"}}>
                 <div className="row">
-                    <AdminSidebar />
+                    <Sidebar />
                     <div className="col-sm p-3 min-vh-100" style={{margin: "10px"}}>
                         <form onSubmit={handleSubmit}>
                             <div className="card shadow-sm my-4">
@@ -55,18 +56,30 @@ const AddUser = () => {
                                     <div className="row">
                                         <div className="col-md-6 mb-3">
                                             <label htmlFor="name" className="form-label">
-                                                Nom complet
+                                                Prénom
                                             </label>
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                id="name"
-                                                value={formData.name}
+                                                id="firstName"
+                                                value={formData.firstName}
                                                 onChange={handleChange}
                                                 required
                                             />
                                         </div>
-
+                                        <div className="col-md-6 mb-3">
+                                            <label htmlFor="name" className="form-label">
+                                                Nom De Famille
+                                            </label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                id="lastName"
+                                                value={formData.lastName}
+                                                onChange={handleChange}
+                                                required
+                                            />
+                                        </div>
                                         <div className="col-md-6 mb-3">
                                             <label htmlFor="email" className="form-label">
                                                 Adresse Email

@@ -4,7 +4,7 @@ import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Helmet } from "react-helmet";
 import AdminNavbar from "../components/AdminNavBar";
-import AdminSidebar from "../components/AdminSideBar";
+import Sidebar from "../components/Sidebar";
 import "../styles.css";
 
 const UserDetail = () => {
@@ -18,16 +18,30 @@ const UserDetail = () => {
     // Fetch user data by ID when the component mounts
     useEffect(() => {
         const fetchUserData = async () => {
-            try {
-                const response = await axios.get(`http://localhost:6060/api/users/${id}`);
-                setUserData(response.data);
+            const token = localStorage.getItem("token"); // Or sessionStorage.getItem("token")
+
+            if (!token) {
+                setError("Utilisateur non authentifié.");
                 setLoading(false);
+                return;
+            }
+
+            try {
+                const response = await axios.get(`http://localhost:6060/users/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+
+                setUserData(response.data);
             } catch (err) {
                 console.error("Error fetching user data:", err);
                 setError("Erreur lors du chargement des données de l'utilisateur.");
+            } finally {
                 setLoading(false);
             }
         };
+
         fetchUserData();
     }, [id]);
 
@@ -59,7 +73,7 @@ const UserDetail = () => {
             <AdminNavbar />
             <div className="container-fluid" style={{ marginTop: "65px" }}>
                 <div className="row">
-                    <AdminSidebar />
+                    <Sidebar />
                     <div className="col-sm p-3 min-vh-100" style={{ margin: "10px" }}>
                         <div className="card shadow-sm my-4">
                             <div className="card-body">
@@ -89,7 +103,7 @@ const UserDetail = () => {
                                     <div className="col-md-8">
                                         <div className="row mb-3">
                                             <div className="col-12">
-                                                <h5 className="text-dark">Nom: {userData.name}</h5>
+                                                <h5 className="text-dark">Nom: {userData.firstName} {userData.lastName}</h5>
                                             </div>
                                         </div>
 

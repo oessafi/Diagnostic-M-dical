@@ -44,6 +44,7 @@ public class AdminUsers {
         userInfo.put("lastName", currentUser.getLastName());
         userInfo.put("roles", currentUser.getAuthorities());
         userInfo.put("details", authentication.getDetails());
+        userInfo.put("role", currentUser.getRole().name());
 
         return ResponseEntity.ok(userInfo);
     }

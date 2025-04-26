@@ -12,7 +12,7 @@ const Signup = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('PATIENT'); // Default role: PATIENT
+  const [role, setRole] = useState('ADMIN'); // Default role: PATIENT
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();

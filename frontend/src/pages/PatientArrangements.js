@@ -7,7 +7,7 @@ import MedecinNavbar from "../components/MedecinNavBar";
 import Sidebar from "../components/Sidebar";
 import "../styles.css";
 
-const ViewReport = () => {
+const PatientArrangements = () => {
     const [userInfo, setUserInfo] = useState(null);
     const [reports, setReports] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -41,7 +41,7 @@ const ViewReport = () => {
         // Fetch reports for the authenticated Medecin
         const fetchReports = async (medecinId) => {
             try {
-                const response = await fetch(`http://localhost:6060/reports`, {
+                const response = await fetch(`http://localhost:6060/api/reports/medecin`, {
                     method: "GET",
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -67,7 +67,7 @@ const ViewReport = () => {
         return <div>Loading...</div>;
     }
 
-    const handleDelete = async (reportId) => {
+    const handleDeleteReport = async (reportId) => {
         const token = localStorage.getItem("token"); // Or use sessionStorage
 
         if (!token) {
@@ -120,18 +120,20 @@ const ViewReport = () => {
     return (
         <>
             <Helmet>
-                <title>Voir Rapports - MediAi Care</title>
+                <title>Consultations - MediAi Care</title>
             </Helmet>
             <MedecinNavbar />
             <div className="container-fluid" style={{marginTop:"65px"}}>
                 <div className="row">
                     <Sidebar />
                     <div className="col-sm p-3 min-vh-100" style={{margin: "10px"}}>
-                        <h4 className="mb-4">Rapports</h4>
+                        <h4 className="mb-4">Rendez-Vous</h4>
                         <div className="card shadow-sm my-2">
                             <div className="card-body">
                                 <div className="d-flex justify-content-between align-items-center">
-                                    <h5 className="text-dark">Tableau De Rapports</h5>
+                                    <h5 className="text-dark">Rendez-Vous Pour {userInfo ? userInfo.firstName + " " + userInfo.lastName : "Loading..."}</h5>
+                                    <Link to="/add-report" className="btn btn-primary">Ajouter Rendez-Vous</Link>
+
                                 </div>
                                 {/*<div className="d-flex justify-content-between my-2">*/}
                                 {/*    <div className="container mt-4">*/}
@@ -175,10 +177,9 @@ const ViewReport = () => {
                                     <thead>
                                     <tr>
                                         <th scope="col" className="text-secondary">#</th>
-                                        <th scope="col" className="text-secondary">Nom</th>
-                                        <th scope="col" className="text-secondary">Rapport</th>
                                         <th scope="col" className="text-secondary">Médecin</th>
-                                        <th scope="col" className="text-secondary">Crée à</th>
+                                        <th scope="col" className="text-secondary">Date</th>
+                                        <th scope="col" className="text-secondary">Durée</th>
                                         <th scope="col" className="text-secondary">Action</th>
                                     </tr>
                                     </thead>
@@ -193,8 +194,6 @@ const ViewReport = () => {
                                                         View Report
                                                     </a>
                                                 </td>
-                                                <td>{new Date(report.createdAt).toLocaleString()}</td>
-                                                <td>{report.medecin.firstName}</td>
                                                 <td>
                                                     <div className="dropdown ms-3">
                                                         <button
@@ -224,10 +223,10 @@ const ViewReport = () => {
                                                                 <a
                                                                     className="dropdown-item"
                                                                     href="#"
-                                                                    onClick={(e) => {
-                                                                        e.preventDefault();
-                                                                        handleDelete(report.id);
-                                                                    }}
+                                                                    // onClick={(e) => {
+                                                                    //     e.preventDefault();
+                                                                    //     handleDelete(report.id);
+                                                                    // }}
                                                                 >
                                                                     <i className="fa-regular fa-trash-can me-2"></i>Supprimer
                                                                 </a>
@@ -235,6 +234,7 @@ const ViewReport = () => {
                                                         </ul>
                                                     </div>
                                                 </td>
+                                                <td>{new Date(report.createdAt).toLocaleString()}</td>
                                             </tr>
                                         ))
                                     ) : (
@@ -242,7 +242,6 @@ const ViewReport = () => {
                                             <td></td>
                                             <td colSpan="4" className="text-center">No reports found for this Medecin.
                                             </td>
-                                            <td></td>
                                         </tr>
                                     )}
                                     </tbody>
@@ -256,4 +255,4 @@ const ViewReport = () => {
     );
 };
 
-export default ViewReport;
+export default PatientArrangements;

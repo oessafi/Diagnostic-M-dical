@@ -3,9 +3,10 @@ import { useNavigate, Link } from 'react-router-dom';
 import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Helmet} from "react-helmet";
-import AdminNavbar from "../components/AdminNavBar";
+import MedecinNavbar from "../components/MedecinNavBar";
 import "../styles.css";
-import MedecinSidebar from "../components/MedecinSideBar";
+import Sidebar from "../components/Sidebar";
+import {Bell, Calendar, Clock} from "lucide-react";
 
 const MedecinDashboard = () => {
   const navigate = useNavigate();
@@ -16,20 +17,33 @@ const MedecinDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [patientCount, setPatientCount] = useState(0);
 
+  const token = localStorage.getItem("token");
+
   // Fetch all users on mount
   useEffect(() => {
     const fetchAllUsers = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get("http://localhost:6060/api/users");
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.warn("No token found — skipping fetch.");
+        return;
+      }
 
-        // Filter only ADMIN and MEDECIN
+      setLoading(true);
+
+      try {
+        const response = await axios.get("http://localhost:6060/users", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        // Filter only ADMIN, MEDECIN, PATIENT
         const filteredUsers = response.data.filter(user =>
             user.role === "ADMIN" || user.role === "MEDECIN" || user.role === "PATIENT"
         );
 
         setAllUsers(filteredUsers);
-        setUsers(filteredUsers); // Show all matching users by default
+        setUsers(filteredUsers);
 
         const patientCount = filteredUsers.filter(user => user.role === "PATIENT").length;
         setPatientCount(patientCount);
@@ -42,6 +56,7 @@ const MedecinDashboard = () => {
 
     fetchAllUsers();
   }, []);
+
 
   // Filter users by role when selectedRole changes
   useEffect(() => {
@@ -56,7 +71,7 @@ const MedecinDashboard = () => {
     if (searchTerm.trim() !== "") {
       const lowerSearch = searchTerm.toLowerCase();
       filtered = filtered.filter(user =>
-          user.name.toLowerCase().includes(lowerSearch)
+          user.firstName.toLowerCase().includes(lowerSearch)
       );
     }
 
@@ -65,33 +80,53 @@ const MedecinDashboard = () => {
   }, [searchTerm, selectedRole, allUsers]);
 
   const handleDelete = async (userId) => {
+    const token = localStorage.getItem("token"); // Or use sessionStorage
+
+    if (!token) {
+      alert("Vous devez être connecté pour effectuer cette action.");
+      return;
+    }
+
     if (window.confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ?")) {
       try {
-        const response = await axios.delete(`http://localhost:6060/api/users/${userId}`);
+        const response = await axios.delete(`http://localhost:6060/users/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
         if (response.status === 204) {
-          // If deletion is successful, remove the user from the state
           setUsers(prevUsers => prevUsers.filter(user => user.id !== userId));
           alert('Utilisateur supprimé avec succès');
         } else {
-          console.error('Failed to delete user:', response);
-          alert('Échec de la suppression de l\'utilisateur');
+          console.error('Échec de la suppression:', response);
+          alert("Échec de la suppression de l'utilisateur.");
         }
       } catch (error) {
-        console.error('There was an error deleting the user!', error);
-        alert('Une erreur est survenue lors de la suppression');
+        console.error("Erreur lors de la suppression :", error);
+        alert("Une erreur est survenue lors de la suppression.");
       }
     }
   };
+  const upcomingAppointments = [
+    { id: 1, doctor: "Dr. Smith", speciality: "Cardiologist", date: "April 24, 2025", time: "10:00 AM" },
+    { id: 2, doctor: "Dr. Johnson", speciality: "Dermatologist", date: "April 29, 2025", time: "2:30 PM" }
+  ];
 
+  const notifications = [
+    { id: 1, message: "Your prescription is ready for pickup", time: "1 hour ago" },
+    { id: 2, message: "Dr. Smith has confirmed your appointment", time: "Yesterday" },
+    { id: 3, message: "Your lab results are available", time: "2 days ago" }
+  ];
   return (
       <>
         <Helmet>
           <title>Admin Dashboard - MediAi Care</title>
         </Helmet>
-        <AdminNavbar />
-        <div className="container-fluid" style={{marginTop:"65px"}}>
+        <MedecinNavbar/>
+        <div className="container-fluid" style={{marginTop: "65px"}}>
           <div className="row">
-            <MedecinSidebar />
+            <Sidebar/>
             <div className="col-sm p-3 min-vh-100" style={{margin: "10px"}}>
               <h4>Dashboard</h4>
               <div className="d-flex flex-wrap justify-content-between mt-3">
@@ -126,112 +161,201 @@ const MedecinDashboard = () => {
                 </div>
               </div>
 
-              <div className="card shadow-sm my-2">
-                <div className="card-body">
-                  <div className="d-flex justify-content-between align-items-center">
-                    <h5 className="text-dark">Tableau d'Utilisateur</h5>
-                    <Link to="/manage-users" className="btn btn-primary">Voir Plus</Link>
-                  </div>
-                  <div className="d-flex justify-content-between my-2">
-                    <div className="container mt-4">
-                      <div className="row">
-                        <div className="col-12 d-flex justify-content-between align-items-center">
-                          {/* Search Bar */}
-                          <div className="input-group" style={{flex: 1, maxWidth: '30%'}}>
-                                                <span className="input-group-text" id="search-addon">
-                                                  <i className="fas fa-search"></i>
-                                                </span>
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Recherche Nom"
-                                aria-label="Search"
-                                aria-describedby="search-addon"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-
-                          </div>
-
-                          {/* Select Option */}
-                          <div style={{flex: 0.3}}>
-                            <select
-                                className="form-select"
-                                value={selectedRole}
-                                onChange={(e) => setSelectedRole(e.target.value)}
-                            >
-                              <option value="">Sélectionner Role</option>
-                              <option value="ADMIN">Admin</option>
-                              <option value="MEDECIN">Medecin</option>
-                            </select>
-                          </div>
+              <div className="dashboard-cards">
+                <div className="card dashboard-card">
+                  <div className="card-body">
+                    <h5 className="card-title">Prochains Rendez-vous</h5>
+                    {upcomingAppointments.length > 0 ? (
+                        <div className="appointments-list">
+                          {upcomingAppointments.map(appointment => (
+                              <div className="appointment-item" key={appointment.id}>
+                                <div className="appointment-icon">
+                                  <Calendar size={20}/>
+                                </div>
+                                <div className="appointment-details">
+                                  <h6>{appointment.doctor}</h6>
+                                  <p className="text-muted">{appointment.speciality}</p>
+                                  <div className="appointment-time">
+                                    <Clock size={14}/>
+                                    <span>{appointment.date} at {appointment.time}</span>
+                                  </div>
+                                </div>
+                                <button className="btn btn-sm btn-outline-primary">Details</button>
+                              </div>
+                          ))}
                         </div>
-                      </div>
+                    ) : (
+                        <p className="text-center text-muted mt-4">No rendez-vous</p>
+                    )}
+                    <div className="text-center mt-3">
+                      <button
+                          className="btn btn-primary"
+                          onClick={() => navigate('/view-appointments')}
+                      >
+                        Voir Consultations
+                      </button>
                     </div>
-
                   </div>
-                  <table className="table">
-                    <thead>
-                    <tr>
-                      <th scope="col" className="text-secondary">#</th>
-                      <th scope="col" className="text-secondary">Full Name</th>
-                      <th scope="col" className="text-secondary">Email</th>
-                      <th scope="col" className="text-secondary">Role</th>
-                      <th scope="col" className="text-secondary">Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {users.map((user, index) => (
-                        <tr key={user.id}>
-                          <th scope="row">{index + 1}</th>
-                          <td>{user.name}</td>
-                          <td>{user.email}</td>
-                          <td>{user.role.charAt(0) + user.role.slice(1).toLowerCase()}</td>
-                          <td>
-                            <div className="dropdown ms-3">
-                              <button
-                                  className="btn btn-link p-0"
-                                  type="button"
-                                  id="dropdownMenuButton"
-                                  data-bs-toggle="dropdown"
-                                  aria-expanded="false"
-                              >
-                                <i className="fas fa-ellipsis-v text-dark"></i> {/* Black icon */}
-                              </button>
-                              <ul className="dropdown-menu dropdown-menu-end"
-                                  aria-labelledby="dropdownMenuButton">
-                                <li>
-                                  <Link className="dropdown-item border-bottom"
-                                        to={`/user-details/${user.id}`}>
-                                    <i className="fa-regular fa-eye me-2"></i>Détail
-                                  </Link>
-                                </li>
+                </div>
 
-                                {/* Delete Option */}
-                                <li>
-                                  <a
-                                      className="dropdown-item"
-                                      href="#"
-                                      onClick={(e) => {
-                                        e.preventDefault();
-                                        handleDelete(user.id);
-                                      }}
-                                  >
-                                    <i className="fa-regular fa-trash-can me-2"></i>Supprimer
-                                  </a>
-                                </li>
-                              </ul>
-                            </div>
-                          </td>
-                        </tr>
-                    ))}
-                    </tbody>
-                  </table>
+                <div className="card dashboard-card">
+                  <div className="card-body">
+                    <h5 className="card-title">Notifications</h5>
+                    {notifications.length > 0 ? (
+                        <div className="notifications-list">
+                          {notifications.map(notification => (
+                              <div className="notification-item" key={notification.id}>
+                                <div className="notification-icon">
+                                  <Bell size={18}/>
+                                </div>
+                                <div className="notification-content">
+                                  <p>{notification.message}</p>
+                                  <small className="text-muted">{notification.time}</small>
+                                </div>
+                              </div>
+                          ))}
+                        </div>
+                    ) : (
+                        <p className="text-center text-muted mt-4">No new notifications</p>
+                    )}
+                    <div className="text-center mt-3">
+                      <button className="btn btn-outline-secondary btn-sm">View All</button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+        <style jsx>{`
+          .dashboard-layout {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+          }
+
+          .dashboard-container {
+            display: flex;
+            flex: 1;
+            padding-top: 70px; /* Adjust based on navbar height */
+          }
+
+          .dashboard-content {
+            flex: 1;
+            padding: 25px;
+            background-color: #f9f9f9;
+          }
+
+          .dashboard-header {
+            margin-bottom: 25px;
+          }
+
+          .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+          }
+
+          .dashboard-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            height: 100%;
+          }
+
+          .appointments-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+          }
+
+          .appointment-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            gap: 15px;
+          }
+
+          .appointment-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e9ecef;
+            color: #0d6efd;
+          }
+
+          .appointment-details {
+            flex: 1;
+          }
+
+          .appointment-time {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 5px;
+            font-size: 0.85rem;
+          }
+
+          .notifications-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+          }
+
+          .notification-item {
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            align-items: flex-start;
+          }
+
+          .notification-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0d6efd;
+          }
+
+          .notification-content {
+            flex: 1;
+          }
+
+          .notification-content p {
+            margin-bottom: 0;
+          }
+
+          .quick-access-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+          }
+
+          @media (max-width: 768px) {
+            .dashboard-container {
+              flex-direction: column;
+            }
+
+            .dashboard-cards {
+              grid-template-columns: 1fr;
+            }
+
+            .quick-access-buttons {
+              justify-content: center;
+            }
+          }
+        `}</style>
       </>
   );
 };

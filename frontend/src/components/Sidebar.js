@@ -7,9 +7,7 @@ import {
   FileText, 
   MessageSquare, 
   Users, 
-  Activity,
-  Settings, 
-  LogOut,
+  Bot,
   ChevronRight
 } from 'lucide-react';
 
@@ -74,9 +72,13 @@ const Sidebar = () => {
             <Home size={18} />
             {!isCollapsed && <span>Dashboard</span>}
           </Link>
-          <Link className={`sidebar-item ${isActive('/view-appointments')}`} to="/view-appointments">
+            <Link className={`sidebar-item ${isActive('/chatbot')}`} to="/chatbot">
+                <Bot size={18} />
+                {!isCollapsed && <span>ChatBot</span>}
+            </Link>
+          <Link className={`sidebar-item ${isActive('/appointments')}`} to="/appointments">
             <Calendar size={18} />
-            {!isCollapsed && <span>Appointments</span>}
+            {!isCollapsed && <span>Rendez-Vous</span>}
           </Link>
           <Link className={`sidebar-item ${isActive('/profile')}`} to="/profile">
             <User size={18} />
@@ -92,24 +94,20 @@ const Sidebar = () => {
           </Link>
         </>
       );
-    } else if (role === 'DOCTOR') {
+    } else if (role === 'MEDECIN') {
       return (
         <>
-          <Link className={`sidebar-item ${isActive('/doctor-dashboard')}`} to="/doctor-dashboard">
+          <Link className={`sidebar-item ${isActive('/medecin-dashboard')}`} to="/medecin-dashboard">
             <Home size={18} />
             {!isCollapsed && <span>Dashboard</span>}
           </Link>
-          <Link className={`sidebar-item ${isActive('/view-patients')}`} to="/view-patients">
-            <Users size={18} />
-            {!isCollapsed && <span>Patients</span>}
-          </Link>
-          <Link className={`sidebar-item ${isActive('/diagnostics')}`} to="/diagnostics">
-            <Activity size={18} />
-            {!isCollapsed && <span>Diagnostics</span>}
-          </Link>
-          <Link className={`sidebar-item ${isActive('/schedule')}`} to="/schedule">
+          <Link className={`sidebar-item ${isActive('/view-appointments')}`} to="/view-appointments">
             <Calendar size={18} />
-            {!isCollapsed && <span>Schedule</span>}
+            {!isCollapsed && <span>Consultations</span>}
+          </Link>
+          <Link className={`sidebar-item ${isActive('/reports')}`} to="/reports">
+            <FileText size={18} />
+            {!isCollapsed && <span>Rapports</span>}
           </Link>
         </>
       );
@@ -122,15 +120,11 @@ const Sidebar = () => {
           </Link>
           <Link className={`sidebar-item ${isActive('/manage-users')}`} to="/manage-users">
             <Users size={18} />
-            {!isCollapsed && <span>Manage Users</span>}
+            {!isCollapsed && <span>Utilisateur</span>}
           </Link>
           <Link className={`sidebar-item ${isActive('/view-reports')}`} to="/view-reports">
             <FileText size={18} />
-            {!isCollapsed && <span>Reports</span>}
-          </Link>
-          <Link className={`sidebar-item ${isActive('/settings')}`} to="/settings">
-            <Settings size={18} />
-            {!isCollapsed && <span>Settings</span>}
+            {!isCollapsed && <span>Voir Rapports</span>}
           </Link>
         </>
       );
@@ -148,7 +142,6 @@ const Sidebar = () => {
       <div className="sidebar-header">
         {!isCollapsed && (
           <div className="sidebar-title">
-            <span className="text-primary fw-bold">MediAi</span> Care
           </div>
         )}
         <button 
@@ -163,14 +156,6 @@ const Sidebar = () => {
       <div className="sidebar-content">
         {renderSidebarItems()}
       </div>
-      
-      <div className="sidebar-footer">
-        <Link className="sidebar-item logout" to="/login" onClick={() => localStorage.removeItem('token')}>
-          <LogOut size={18} />
-          {!isCollapsed && <span>Logout</span>}
-        </Link>
-      </div>
-      
       <style jsx>{`
         .sidebar-container {
           height: 100vh;
